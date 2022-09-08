@@ -1,3 +1,5 @@
+package Socket;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -5,8 +7,9 @@ import java.time.format.DateTimeFormatter;
 public class Message {
     private int type;
     private String payload;
-    LocalDateTime DateTime = LocalDateTime.now();
+    LocalDateTime DateTime;
     final private DateTimeFormatter DateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+
 
 
     public Message(Message message){
@@ -44,14 +47,13 @@ public class Message {
 
 
     @Override
-    public String toString(){return "["+this.type+","+this.payload+","+this.DateTime+"]";}
-    public void fromString(String message){
-        message= message.substring(1);
-        message=message.substring(0,message.length()-1);
+    public String toString(){return this.type+","+this.payload+","+this.DateTime.format(DateFormat)+",";}
+    public Message(String message){
         String[] info = message.split(",");
         this.type=Integer.valueOf(info[0]);
         this.payload=info[1];
         this.DateTime=LocalDateTime.parse(info[2],DateFormat);
     }
+
 
 }
