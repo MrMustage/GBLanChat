@@ -3,23 +3,30 @@ package Socket;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 public class BServer {
 
     private static final String killString = "kill";
+    private static final int port = 5454;
 
     public static void main(String[] args) throws IOException {
+
         Selector selector = Selector.open();
         ServerSocketChannel serverSocket = ServerSocketChannel.open();
-        serverSocket.bind(new InetSocketAddress("localhost", 5454));
+        serverSocket.bind(new InetSocketAddress("10.0.0.19", port));
         serverSocket.configureBlocking(false);
         serverSocket.register(selector, SelectionKey.OP_ACCEPT);
         ByteBuffer buffer = ByteBuffer.allocate(256);
 
+        System.out.println("server started at port: " + port );
         while (true) {
             selector.select();
             Set<SelectionKey> selectedKeys = selector.selectedKeys();
@@ -74,5 +81,6 @@ public class BServer {
 
         return builder.start();
     }
+
 
 }

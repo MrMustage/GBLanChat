@@ -17,7 +17,7 @@ public class Main {
         Scanner sc = new Scanner(System.in);
 
         while (true){
-            bc.sendMessage(sc.next());
+            bc.sendMessage(new Message(1,sc.next()).toString());
         }
     }
 }
