@@ -18,10 +18,6 @@ public class BServer {
     private static final int port = 5454;
 
     public static void main(String[] args) throws IOException {
-        String s= "shalom";
-        s=s.substring(1);
-        s=s.substring(0,s.length()-1);
-        System.out.println(s);
         Selector selector = Selector.open();
         ServerSocketChannel serverSocket = ServerSocketChannel.open();
         serverSocket.bind(new InetSocketAddress("10.0.0.23", port));
@@ -61,29 +57,23 @@ public class BServer {
         else {
             buffer.flip();
             client.write(buffer);
-            System.out.println(new String(buffer.array()));
             Message msg = new Message(new String(buffer.array()));
-            System.out.println(msg.getPayload());
+            System.out.println(msg.getPayload()+" - "+msg.getDateTime());
             buffer.clear();
         }
     }
-
     private static void register(Selector selector, ServerSocketChannel serverSocket)
             throws IOException {
-
         SocketChannel client = serverSocket.accept();
         client.configureBlocking(false);
         client.register(selector, SelectionKey.OP_READ);
     }
-
     public static Process start() throws IOException, InterruptedException {
         String javaHome = System.getProperty("java.home");
         String javaBin = javaHome + File.separator + "bin" + File.separator + "java";
         String classpath = System.getProperty("java.class.path");
         String className = BServer.class.getCanonicalName();
-
         ProcessBuilder builder = new ProcessBuilder(javaBin, "-cp", classpath, className);
-
         return builder.start();
     }
 
