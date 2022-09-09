@@ -6,6 +6,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
+import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -29,7 +30,9 @@ public class BServer {
         while (true) {
             selector.select();
             Set<SelectionKey> selectedKeys = selector.selectedKeys();
+            System.out.println(selectedKeys.size());
             Iterator<SelectionKey> iter = selectedKeys.iterator();
+
             while (iter.hasNext()) {
 
                 SelectionKey key = iter.next();
@@ -39,13 +42,28 @@ public class BServer {
                 }
 
                 if (key.isReadable()) {
-                    answerWithEcho(buffer, key);
+                    ReadKeyHandling(buffer,key);
+                    //answerWithEcho(buffer,key);
+                    continue;
                 }
+                if(!key.isValid())key.channel().close();
                 iter.remove();
             }
         }
     }
-
+    public static void ReadKeyHandling(ByteBuffer buffer,SelectionKey key) throws IOException {
+        SocketChannel client = (SocketChannel) key.channel();
+        client.read(buffer);
+        String pure = new String(buffer.array()).trim();
+        //client.close();
+        if(pure.equals("-1"))client.close();
+        buffer.flip();
+        client.write(buffer);
+        Message msg = new Message(new String(buffer.array()));
+        //msg.setLocalTimeOBJ(LocalDateTime.now());
+        System.out.println(msg.getPayload()+" - "+msg.getDateTime());
+        buffer.clear();
+    }
     private static void answerWithEcho(ByteBuffer buffer, SelectionKey key) throws IOException {
 
         SocketChannel client = (SocketChannel) key.channel();
@@ -58,6 +76,7 @@ public class BServer {
             buffer.flip();
             client.write(buffer);
             Message msg = new Message(new String(buffer.array()));
+            msg.setLocalTimeOBJ(LocalDateTime.now());
             System.out.println(msg.getPayload()+" - "+msg.getDateTime());
             buffer.clear();
         }

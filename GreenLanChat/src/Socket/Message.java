@@ -35,6 +35,7 @@ public class Message {
     public String getDateTime(){return this.DateTime.format(DateFormat);}
     public void setDateTimeOBJ(LocalDateTime DateTime){this.DateTime=DateTime;}
     public LocalDateTime getDateTimeOBJ(){return this.DateTime;}
+    public void setLocalTimeOBJ(LocalDateTime DateTime){this.DateTime=DateTime;}
     @Override
     public String toString(){return this.type+","+this.payload+","+this.DateTime.format(DateFormat)+",";}
     public Message(String message){
