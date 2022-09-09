@@ -17,7 +17,7 @@ public class BServer {
 
     private static final String killString = "kill";
     private static final int port = 5454;
-
+    private static String lastMSG=null;
     public static void main(String[] args) throws IOException {
         Selector selector = Selector.open();
         ServerSocketChannel serverSocket = ServerSocketChannel.open();
@@ -28,27 +28,26 @@ public class BServer {
 
         System.out.println("server started at port: " + port );
         while (true) {
+
             selector.select();
             Set<SelectionKey> selectedKeys = selector.selectedKeys();
-            System.out.println(selectedKeys.size());
             Iterator<SelectionKey> iter = selectedKeys.iterator();
 
             while (iter.hasNext()) {
-
                 SelectionKey key = iter.next();
-
-                if (key.isAcceptable()) {
-                    register(selector, serverSocket);
-                }
+                    if (key.isAcceptable()) {
+                        register(selector, serverSocket);
+                    }
 
                 if (key.isReadable()) {
-                    ReadKeyHandling(buffer,key);
+                    ReadKeyHandling(buffer, key);
                     //answerWithEcho(buffer,key);
-                    continue;
                 }
-                if(!key.isValid())key.channel().close();
+                if (!key.isValid()) key.channel().close();
                 iter.remove();
+
             }
+
         }
     }
     public static void ReadKeyHandling(ByteBuffer buffer,SelectionKey key) throws IOException {
@@ -56,6 +55,7 @@ public class BServer {
         client.read(buffer);
         String pure = new String(buffer.array()).trim();
         //client.close();
+        if(pure.equals(lastMSG)){return;}
         if(pure.equals("-1"))client.close();
         buffer.flip();
         client.write(buffer);
@@ -63,6 +63,7 @@ public class BServer {
         //msg.setLocalTimeOBJ(LocalDateTime.now());
         System.out.println(msg.getPayload()+" - "+msg.getDateTime());
         buffer.clear();
+        lastMSG=pure;
     }
     private static void answerWithEcho(ByteBuffer buffer, SelectionKey key) throws IOException {
 
@@ -87,7 +88,7 @@ public class BServer {
         client.configureBlocking(false);
         client.register(selector, SelectionKey.OP_READ);
     }
-    public static Process start() throws IOException, InterruptedException {
+    public static Process start() throws IOException {
         String javaHome = System.getProperty("java.home");
         String javaBin = javaHome + File.separator + "bin" + File.separator + "java";
         String classpath = System.getProperty("java.class.path");
