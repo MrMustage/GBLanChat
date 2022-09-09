@@ -3,25 +3,24 @@ package Socket;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
 public class BServer {
 
     private static final String killString = "kill";
     private static final int port = 5454;
     private static String lastMSG=null;
+    private static List<SelectionKey> userList= new ArrayList<>();
     public static void main(String[] args) throws IOException {
         Selector selector = Selector.open();
         ServerSocketChannel serverSocket = ServerSocketChannel.open();
-        serverSocket.bind(new InetSocketAddress("10.0.0.23", port));
+        serverSocket.bind(new InetSocketAddress("localhost", port));
         serverSocket.configureBlocking(false);
         serverSocket.register(selector, SelectionKey.OP_ACCEPT);
         ByteBuffer buffer = ByteBuffer.allocate(256);
@@ -37,6 +36,8 @@ public class BServer {
                 SelectionKey key = iter.next();
                     if (key.isAcceptable()) {
                         register(selector, serverSocket);
+                        key.attach(1);
+                        userList.add(key);
                     }
 
                 if (key.isReadable()) {
@@ -86,8 +87,10 @@ public class BServer {
             throws IOException {
         SocketChannel client = serverSocket.accept();
         client.configureBlocking(false);
+
         client.register(selector, SelectionKey.OP_READ);
     }
+    //public static SelectionKey findByID(int i){return };
     public static Process start() throws IOException {
         String javaHome = System.getProperty("java.home");
         String javaBin = javaHome + File.separator + "bin" + File.separator + "java";
@@ -96,6 +99,5 @@ public class BServer {
         ProcessBuilder builder = new ProcessBuilder(javaBin, "-cp", classpath, className);
         return builder.start();
     }
-
 
 }
