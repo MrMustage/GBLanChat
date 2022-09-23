@@ -148,20 +148,20 @@ public class BServer {
     public static void sendMSG(Message msg) {
 
     }
-//
-//    public static SelectionKey scanKeysList(int userID) {
-//        for (SelectionKey sk : userList) {
-//            System.out.println();
-//            System.out.println("channel: " + sk.channel().toString() + "userID: " + sk.attachment());
-//
-//            if (sk.attachment().equals(userID)) {
-//                System.out.println(sk.channel().isOpen());
-//                System.out.println(sk.isWritable());
-//                System.out.println("found");
-//                return sk;
-//            }
-//        }
-//        return null;
-//    }
+
+    public static SelectionKey scanKeysListByID(int userID) {
+        for (SelectionKey sk : userList) {
+            System.out.println();
+            System.out.println("channel: " + sk.channel().toString() + "userID: " + sk.attachment());
+
+            if (sk.attachment().equals(userID)) {
+                System.out.println(sk.channel().isOpen());
+                System.out.println(sk.isWritable());
+                System.out.println("found");
+                return sk;
+            }
+        }
+        return null;
+    }
 
 }
