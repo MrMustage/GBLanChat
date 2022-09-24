@@ -25,7 +25,7 @@ public class Main {
         };
 
         while (true){
-            bc.sendMessage(new Message(1,sc.next()).toString());
+            bc.sendMessage(new Message(1,sc.next(),sc.nextInt()).toString());
         }
     }
 }

@@ -15,15 +15,10 @@ public class Message {
         this.DateTime=message.getDateTimeOBJ();
         this.toID = message.getToID();
     }
-    public Message(int type,String payload){
+    public Message(int type,String payload, int toID){
         this.type=type;
         this.payload=payload;
         this.DateTime=LocalDateTime.now();
-    }
-    public Message(int type,String payload,LocalDateTime DateTime, int toID){
-        this.type=type;
-        this.payload=payload;
-        this.DateTime=DateTime;
         this.toID = toID;
     }
 
@@ -48,7 +43,7 @@ public class Message {
     public String toString(){return this.type+","+this.payload+","+this.DateTime.format(DateFormat)+","+toID + ",";}
     public Message(String message){
         String[] info = message.split(",");
-        this.type=Integer.valueOf(info[0]);
+        this.type=Integer.parseInt(info[0]);
         this.payload=info[1];
         this.DateTime=LocalDateTime.parse(info[2],DateFormat);
         this.toID = Integer.parseInt(info[3]);
