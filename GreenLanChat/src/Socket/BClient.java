@@ -31,7 +31,7 @@ public class BClient {
 
     private BClient() {
         try {
-            client = SocketChannel.open(new InetSocketAddress("10.0.0.30", 5454));
+            client = SocketChannel.open(new InetSocketAddress("10.0.0.33", 5454));
             buffer = ByteBuffer.allocate(256);
         } catch (IOException e) {
             e.printStackTrace();

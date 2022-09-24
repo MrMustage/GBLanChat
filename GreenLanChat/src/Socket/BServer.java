@@ -24,7 +24,7 @@ public class BServer {
     public static void main(String[] args) throws IOException {
         Selector selector = Selector.open();
         ServerSocketChannel serverSocket = ServerSocketChannel.open();
-        serverSocket.bind(new InetSocketAddress("localhost", port));
+        serverSocket.bind(new InetSocketAddress("10.0.0.33", port));
         serverSocket.configureBlocking(false);
         serverSocket.register(selector, SelectionKey.OP_ACCEPT);
         ByteBuffer buffer = ByteBuffer.allocate(256);
@@ -73,7 +73,8 @@ public class BServer {
     }
 
 
-    public static void forwardMSG(ByteBuffer buffer, SelectionKey key, Message msg) throws IOException {
+    public static void forwardMSG(ByteBuffer buffer, int toID, Message msg) throws IOException {
+        SelectionKey key = scanKeysListByID(toID);
         if(key == null){
             return;
         }
@@ -104,8 +105,11 @@ public class BServer {
         Message msg = new Message(new String(buffer.array()));
 
         //msg.setLocalTimeOBJ(LocalDateTime.now());
+        System.out.println();
+        System.out.println(msg.toString());
         System.out.println(msg.getPayload() + " - " + msg.getDateTime());
         buffer.clear();
+        forwardMSG(buffer,msg.getToID(),msg);
         lastMSG = pure;
     }
 
@@ -157,7 +161,6 @@ public class BServer {
             if (sk.attachment().equals(userID)) {
                 System.out.println(sk.channel().isOpen());
                 System.out.println(sk.isWritable());
-                System.out.println("found");
                 return sk;
             }
         }

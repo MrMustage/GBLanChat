@@ -45,12 +45,12 @@ public class Message {
         this.toID = i;
     }
     @Override
-    public String toString(){return this.type+","+this.payload+","+this.DateTime.format(DateFormat)+","+toID;}
+    public String toString(){return this.type+","+this.payload+","+this.DateTime.format(DateFormat)+","+toID + ",";}
     public Message(String message){
         String[] info = message.split(",");
         this.type=Integer.valueOf(info[0]);
         this.payload=info[1];
         this.DateTime=LocalDateTime.parse(info[2],DateFormat);
-        this.toID = Integer.valueOf(info[3]);
+        this.toID = Integer.parseInt(info[3]);
     }
 }
