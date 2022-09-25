@@ -1,7 +1,9 @@
 package DataBase;
 
-import javax.print.DocFlavor;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.List;
 
 public class BDataBase{
 
@@ -51,18 +53,8 @@ public class BDataBase{
         String line;
         String[] parametersFromLine; //umm🤓... this is actually a 2D array of chars 🤔
 
-        int targetIDValue = 0;
-        switch (target){
-            case username -> targetIDValue = 0;
-            case id -> targetIDValue = 1;
-        }
-
-        int byParameterValue = 0;
-        switch (byParameter){
-            case username -> byParameterValue = 0;
-            case id -> byParameterValue = 1;
-        }
-
+        int targetIDValue = enumToInt(target);
+        int byParameterValue = enumToInt(byParameter);
 
         while ((line = bufferedReader.readLine())!= null){
             parametersFromLine = line.split(":");
@@ -71,6 +63,36 @@ public class BDataBase{
             }
         }
         return "not found - Error 404";
+    }
+
+    public void delete (parameters deleteBy, String targetValue) throws IOException {
+        FileReader fr = new FileReader(this.path);
+        LineNumberReader lnr = new LineNumberReader(fr);
+        List<String> lines = Files.readAllLines(this.path.toPath());
+        String[] parametersFromLine;
+
+        String st;
+        while ((st = lnr.readLine()) != null){
+            parametersFromLine = st.split(":");
+            if(parametersFromLine[enumToInt(deleteBy)].equals(targetValue)){
+                lines.remove(lnr.getLineNumber()-1);
+            }
+        }
+        Files.write(this.path.toPath(), lines);
+
+//        while ((line = bufferedReader.readLine())!= null){
+//            parametersFromLine = line.split(":");
+//            if (parametersFromLine[enumToInt(deleteBy)].equals(targetValue)){
+//                bufferedWriter.write("null:null:");
+//
+//                bufferedWriter.close();
+//                bufferedReader.close();
+//                fileReader.close();
+//                fw.close();
+//                return;
+//            }
+//        }
+        return;
     }
 
     public boolean isEmpty () throws IOException {
@@ -94,6 +116,14 @@ public class BDataBase{
             id++;
         }
         return id;
+    }
+
+    private int enumToInt (parameters p){
+        switch (p){
+            case username ->  {return 0;}
+            case id -> {return 1;}
+        }
+        return -1;
     }
 
 
