@@ -29,14 +29,12 @@ public class BDataBase{
         this.id = lastID();
     }
 
-    private void append(String username) throws IOException {
+    private void append(String st) throws IOException {
         FileWriter fw = new FileWriter(path,true);
         BufferedWriter bw = new BufferedWriter(fw);
 
-        if(isEmpty()) bw.write( username);
-        else bw.write( "\r\n" + username);
-        String line;
-
+        if(isEmpty()) bw.write( st);
+        else bw.write( "\r\n" + st);
 
         bw.close();
         fw.close();
@@ -112,10 +110,13 @@ public class BDataBase{
         FileReader fileReader = new FileReader(path);
         BufferedReader bufferedReader = new BufferedReader(fileReader);
 
-        while ((bufferedReader.readLine() != null)){
-            id++;
+        String lastLine = "";
+        String curruntLine="";
+        while ((curruntLine=bufferedReader.readLine()) != null){
+            lastLine=curruntLine;
         }
-        return id;
+        String parameters[] = lastLine.split(":");
+        return Integer.parseInt(parameters[1]);
     }
 
     private int enumToInt (parameters p){

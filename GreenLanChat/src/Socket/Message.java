@@ -39,7 +39,7 @@ public class Message {
     @Override
     public String toString(){return this.type+","+this.payload+","+this.DateTime.format(DateFormat)+",";}
     public Message(String message){
-        String[] info = message.split(","); //umm🤓... this is actually a 2D array of chars 🤔
+        String[] info = message.split(","); //umm🤓... this is actually a 2D array of chars
         this.type=Integer.valueOf(info[0]);
         this.payload=info[1];
         this.DateTime=LocalDateTime.parse(info[2],DateFormat);
